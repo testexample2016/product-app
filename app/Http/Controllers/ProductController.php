@@ -13,7 +13,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', Product::class);
+       $this->authorize('viewAny', Product::class);
 
         $products = Product::latest()->paginate(5);
 
@@ -27,6 +27,8 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Product::class);
+        
         return view('products.create');
     }
 
@@ -36,7 +38,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
 
-        $this->authorize('create', 'product');
+       $this->authorize('create', Product::class);
 
 
 
@@ -49,6 +51,7 @@ class ProductController extends Controller
         ]);
 
 
+        $request->merge(['resource_name' => "product"]);
 
         Product::create($request->all());
 
@@ -65,7 +68,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
 
-        $this->authorize('view', Product::class);
+        $this->authorize('view', $product);
 
         return view('products.show',compact('product'));
     }
@@ -75,6 +78,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
+        $this->authorize('update', $product);
+
         return view('products.edit',compact('product'));
     }
 
@@ -83,7 +88,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $this->authorize('update', 'product');
+       $this->authorize('update', $product);
 
         $request->validate([
 
@@ -93,6 +98,7 @@ class ProductController extends Controller
 
         ]);
 
+        $request->merge(['resource_name' => "product"]);
 
 
         $product->update($request->all());
@@ -109,6 +115,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        $this->authorize('delete', $product);
+        
         $product->delete();
 
 

@@ -5,6 +5,7 @@ namespace App\Policies;
 //use App\Models\Product;
 use App\Models\User;
 use App\Models\Resource;
+use App\Models\Product;
 use Illuminate\Auth\Access\Response;
 
 class ProductPolicy
@@ -23,41 +24,47 @@ class ProductPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Resource $resoure): Response
+    public function view(User $user, Product $product): bool
     {
-        return $user->hasPermission('read', $resource->name)
-            ? Response::allow()
-            : Response::deny('You do not have permission to view this resource.');
+        return $user->hasPermission('read', $product->resource_name);
+        //     ? Response::allow()
+        //     : Response::deny('You do not have permission to view this resource.');
+
+        // Allow all users to view posts
+        // return true;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Resource $resource): Response
+    public function create(User $user): bool
     {
-        return $user->hasPermission('create', $resource->name)
-            ? Response::allow()
-            : Response::deny('You do not have permission to create this resource.');
+            // return $user->hasPermission('create', $product->resource_name)
+            // ? Response::allow()
+            // : Response::deny('You do not have permission to create this resource.');
+
+           return $user->hasRole('Admin') || $user->hasRole('Employee');          
+           
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Resource $resource): Response
+    public function update(User $user, Product $product): bool
     {
-        return $user->hasPermission('update', $resource->name)
-            ? Response::allow()
-            : Response::deny('You do not have permission to update this resource.');
+        return $user->hasPermission('update', $product->resource_name);
+            // ? Response::allow()
+            // : Response::deny('You do not have permission to update this resource.');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Resource $resource): bool
+    public function delete(User $user, Product $product): bool
     {
-        return $user->hasPermission('delete', $resource->name)
-            ? Response::allow()
-            : Response::deny('You do not have permission to delete this resource.');
+        return $user->hasPermission('delete', $product->resource_name);
+            // ? Response::allow()
+            // : Response::deny('You do not have permission to delete this resource.');
     }
 
     /**
